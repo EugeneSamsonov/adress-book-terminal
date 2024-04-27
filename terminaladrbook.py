@@ -3,7 +3,7 @@ import os
 from AdrBookExceptions import *
 
 
-class TerminalAdrBook:
+class TerminalAdrBook:  # TODO "del all"
     def __init__(self):
         with open('ardBook.json', 'r') as data:
             if os.stat("ardBook.json").st_size != 0:
