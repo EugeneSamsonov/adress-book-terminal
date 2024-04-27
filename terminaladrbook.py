@@ -3,7 +3,7 @@ import os
 from AdrBookExceptions import *
 
 
-class AdrBook:
+class TerminalAdrBook:
     def __init__(self):
         with open('ardBook.json', 'r') as data:
             if os.stat("ardBook.json").st_size != 0:
@@ -63,7 +63,16 @@ class AdrBook:
     def __print_all_numbers(self):
         max_len = max([len(key) for key in self.book.keys()])
         for number in sorted(self.book, key=lambda x: x):
-            print(f"{number}{self.book[number]['number']:^{30-max_len}}")
+            print(f"{number:<{max_len+5}} \t {self.book[number]['number']}")
+
+    def find_number_in_book(self, name: str):
+        if name in self.book:
+            print(f"{name} \t {self.book[name]['number']}")
+            return self.book[name]
+        else:
+            print("Name not found")
+
+
     def __select_command(self) -> None:
         while True:
             try:
@@ -91,9 +100,13 @@ class AdrBook:
                         or guess.count('print') == 1:
                     self.__print_all_numbers()
 
-                elif guess == 'find':
-                    # bookfindnum()
-                    pass
+                elif 'find' in guess and \
+                        len(guess.split('find')) == 1 \
+                        or guess.count('find') == 1 \
+                        and len(guess.split('find')) > 1:
+
+                    self.find_number_in_book(guess.split("find")[1].strip())
+
                 else:
                     print('You enter invalid command')
 
@@ -106,7 +119,7 @@ class AdrBook:
             'Enter print to print all your numbers',
             'Enter append n to append n numbers (n=1)',
             'Enter del {some number} to delete number',
-            'Enter find to find number',
+            'Enter find {some name} to find number',
             'Enter exit to exit',
             sep='\n'
         )

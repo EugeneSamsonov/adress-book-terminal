@@ -1,5 +1,5 @@
-from adrbook import AdrBook
+from terminaladrbook import TerminalAdrBook
 
-ab = AdrBook()
+ab = TerminalAdrBook()
 
 ab.start()
