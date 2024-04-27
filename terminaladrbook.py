@@ -53,7 +53,12 @@ class TerminalAdrBook:  # TODO "del all"
         else:
             self.__add_number(data)
 
-    def __delete_number_from_adrbook(self, key: str) -> None:
+    def __delete_number_from_adrbook(self, key: str = '', del_all=False) -> None:
+        if del_all:
+            self.book = {}
+            self.__save_book()
+            return
+
         if key in self.book:
             del self.book[key]
             self.__save_book()
@@ -61,9 +66,12 @@ class TerminalAdrBook:  # TODO "del all"
             print("Number not found to delete")
 
     def __print_all_numbers(self):
-        max_len = max([len(key) for key in self.book.keys()])
-        for number in sorted(self.book, key=lambda x: x):
-            print(f"{number:<{max_len+5}} \t {self.book[number]['number']}")
+        if len(self.book) > 0:
+            max_len = max([len(key) for key in self.book.keys()])
+            for number in sorted(self.book, key=lambda x: x):
+                print(f"{number:<{max_len+5}} \t {self.book[number]['number']}")
+        else:
+            print("Your address book is empty")
 
     def find_number_in_book(self, name: str):
         if name in self.book:
@@ -71,7 +79,6 @@ class TerminalAdrBook:  # TODO "del all"
             return self.book[name]
         else:
             print("Name not found")
-
 
     def __select_command(self) -> None:
         while True:
@@ -91,10 +98,14 @@ class TerminalAdrBook:  # TODO "del all"
                     else:
                         self.__append_number_to_adrbook(self.__verify_and_split_data(guess.split('append')[1]))
 
-                elif len(guess.split('del')) == 0 \
+                elif 'del' in guess and\
+                        len(guess.split('del')) < 2 \
                         or guess.count('del') == 1:
 
-                    self.__delete_number_from_adrbook(guess.split("del")[1].strip())
+                    if guess.split('del')[1].strip() == 'all':
+                        self.__delete_number_from_adrbook(del_all=True)
+                    else:
+                        self.__delete_number_from_adrbook(guess.split("del")[1].strip())
 
                 elif len(guess.split('print')) == 0 \
                         or guess.count('print') == 1:
@@ -118,7 +129,7 @@ class TerminalAdrBook:  # TODO "del all"
             'Hello!',
             'Enter print to print all your numbers',
             'Enter append n to append n numbers (n=1)',
-            'Enter del {some number} to delete number',
+            "To delete a number, enter 'del {some number}'. To make your address book empty, enter 'del all'.",
             'Enter find {some name} to find number',
             'Enter exit to exit',
             sep='\n'
